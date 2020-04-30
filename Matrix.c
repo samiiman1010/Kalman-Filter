@@ -268,6 +268,7 @@ int diagonal(matrix * v, matrix * mtx) {
   return 0;
 }
 
+/*
 int main() {
   matrix * A, * Ac, * B, * c, * d, * M, * ct, * mdp;
   double dp;
@@ -364,3 +365,5 @@ int main() {
 
   return 0;
 }
+
+*/
