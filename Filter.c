@@ -97,16 +97,19 @@ void kalman() {
 
 
     /* Let's predict! */
+
+    //These are intermediate or 'temp' matrices for calculating
+    //  what we actually want
     matrix * a_ls;
     a_ls = newMatrix(3, 1);
     matrix * b_action;
     b_action = newMatrix(3, 1);
     matrix * a_p;
     a_p = newMatrix(3, 1);
-    matrix * a_inv;
-    a_inv = newMatrix(3, 1);
-    matrix * apa_inv;
-    apa_inv = newMatrix(3, 1);
+    matrix * a_tran;
+    a_tran = newMatrix(3, 1);
+    matrix * apa_tran;
+    apa_tran = newMatrix(3, 1);
 
 
     //This part is representative of:
@@ -118,22 +121,22 @@ void kalman() {
     //This part is representative of:
     //  p = A * P * A' + Q
     product(A, P, a_p);
-    transpose(A, a_inv);
-    product(a_p, a_inv, apa_inv);
-    sum(apa_inv, Q, p);
+    transpose(A, a_tran);
+    product(a_p, a_tran, apa_tran);
+    sum(apa_tran, Q, p);
 
     //Allow me to just clean this up...
     deleteMatrix(a_ls);
     deleteMatrix(b_action);
     deleteMatrix(a_p);
-    deleteMatrix(a_inv);
-    deleteMatrix(apa_inv);
+    deleteMatrix(a_tran);
+    deleteMatrix(apa_tran);
 
 
     /* Let's Update! */
 
     //This part is representative of:
-    //
+    //  K = p * C * p
 }
 
 
