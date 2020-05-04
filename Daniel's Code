@@ -1,0 +1,188 @@
+#include <stdio.h>
+
+//#include <ti/devices/msp432p4xx/driverlib/driverlib.h>
+#include <math.h>
+//#include<linalg.h>
+//IGRF Model of Earth's magnetic field for position determination
+
+#define EarthRadius 6378*10^3 //(meters) https://www.space.com/17638-how-big-is-earth.html
+#define PressSensorAlt 5000*10^3
+#define ggauss 3.55
+#define hgauss 4.57
+float mean(float *arr, int n);
+float covariance(float *arr1, float *arr2, int n);
+float tpose(float a[][2]);
+
+float mean(float *arr, int n)
+  {
+      float sum = 0;
+      int i;
+      for(i = 0; i < n; i++)
+          sum = sum + arr[i];
+      return sum / n;
+  }
+
+float covariance(float *arr1, float *arr2, int n)
+      {
+          float sum = 0;
+          int i;
+          for(i = 0; i < n; i++)
+              sum = sum + (arr1[i] - mean(arr1, n)) * (arr2[i] - mean(arr2, n));
+
+          return sum / (n - 1);
+      }
+
+//void dterm(float det1[], float det2[], float det3[], float dtermmat[]);
+
+
+float tpose(float a[][2])
+{
+    char c;
+    char d;
+    float switch1;
+    float switch2;
+    
+    for(c=0;c++;c<2)
+    {
+            for(d=0;d++;d<2)
+            {
+                switch1=a[c][d];
+                switch2=a[d][c];
+                a[c][d]=switch2;
+                a[d][c]=switch1;
+            }
+        
+    }
+}
+
+
+int sample_time=10;
+//pqr pitch roll and yaw - attitude
+
+//sample at x[n-1] rate
+
+//float d_dx_pqr[3]={dphi,dtheta,dpsi};
+
+//dphi=(1/T)*(phi-phi[n-1]), T=1/(sampling freq)
+
+
+
+
+//Euler Quaternion Method To Determine Attitude
+int main(void)
+{
+
+//float phi;
+
+float vect_i;//vector components
+float vect_j;
+float vect_k;
+
+//phi derivative implemented in discrete time
+ float T=1/1200;
+int data_stream[10]={1,2,3,4,1,5,1,7,1,1};
+int bo=10;
+//dphi=(1/T)*(phi-phi[n-1]), T=1/(sampling freq)
+
+//BEGGINING OF KALMAN FILTER
+float phi=1;
+float psi=1;
+float theta=1;
+//sample at 12 GHz normal 
+//state transition matrix in kalman
+//pqr_raw is angular rate output
+float pqr_raw[3][3]={{1,0,0},{0,cos(phi),-sin(theta)},{-sin(theta),cos(theta) * sin(phi),cos(theta) * cos(phi)}};
+float pqr[3][1];
+
+int fs=12000;//1/T
+//phi derivative
+for(sample_time=0;sample_time<10;sample_time++)
+{
+ int delay1=phi;//phi[n-1]
+ int delaytheta=theta;
+ int delaypsi=psi;
+
+ int currsamp=phi;
+ sample_time++;
+ currsamp=phi;
+ int currsamptheta=theta;
+ int currsamppsi=psi;
+
+ int filtered=fs * (currsamp-delay1); //1/T*(x[n]-x[n-1])
+ int filteredtheta=fs * (currsamptheta-delaytheta);
+ int filteredpsi=fs * (currsamppsi-delaypsi);
+
+ //derivative of phi calculated, now to be multiplied by pitch matrix
+ pqr_raw[0][0]=filtered * pqr_raw[0][0];
+ pqr_raw[1][0]=filtered * pqr_raw[1][0];
+ pqr_raw[2][0]=filtered * pqr_raw[2][0];
+
+ pqr_raw[0][1]=filteredtheta * pqr_raw[0][1];
+ pqr_raw[1][1]=filteredtheta * pqr_raw[1][1];
+ pqr_raw[2][1]=filteredtheta * pqr_raw[2][1];
+
+ pqr_raw[0][2]=filteredpsi * pqr_raw[0][2];
+ pqr_raw[1][2]=filteredpsi * pqr_raw[1][2];
+ pqr_raw[2][2]=filteredpsi * pqr_raw[2][2];
+
+pqr[0][0]=pqr_raw[0][0]+pqr_raw[0][1]+pqr_raw[0][2];
+pqr[1][0]=pqr_raw[1][0]+pqr_raw[1][1]+pqr_raw[1][2];
+pqr[2][0]=pqr_raw[2][0]+pqr_raw[2][1]+pqr_raw[2][2]; //pitch roll yaw
+}
+
+//pqr is a 3x1 matrix
+//its error is a 3x1 using formula (actual-theoritical)/theoritical (in percent form)
+
+float des_phi=1;
+float des_theta=1;
+float des_psi=1;
+float error[3][1];
+error[0][0]=(pqr[0][0]-des_phi)/(des_phi); //estimation error P
+error[1][0]=(pqr[1][0]-des_theta)/(des_theta);//how good intial value is, estimation of intial state, filter converges
+error[2][0]=(pqr[2][0]-des_psi)/(des_psi);
+
+//form need for covariance
+float cov[3]={pqr[0][0],pqr[1][0],pqr[2][0]};
+float err_ex[3]={error[0][0],error[1][0],error[2][0]}; //estimation error P
+
+int n = sizeof(cov) / sizeof(cov[0]);
+mean(cov,n);
+covariance(cov,err_ex,n);
+
+//Would this multiplied as a scalar
+//float f[4][4]={{0,-p,-q,-r},{p,0,r,-q},{q,-r,0,p},{r,q,-p,0}}; //state transition matrix
+
+// Function to find covariance.
+
+float arr1[] = {65.21, 64.75, 65.26, 65.76, 65.96};
+ n = sizeof(arr1) / sizeof(arr1[0]);
+
+float arr2[] = {67.25, 66.39, 66.12, 65.70, 66.64};
+int m = sizeof(arr2) / sizeof(arr2[0]);
+
+if(n==m)
+    {
+          mean(arr1,n);
+
+          covariance(arr1,arr2,n);
+    }
+
+
+
+
+
+}
+
+
+
+
+
+//measurement bandwidth must equal or exceed 80Hz
+//MSP430G2553, can operate up to 16GhZ,
+//Ex. Sampling Freq set 12 GHz, 6GHz effective (nyquist rate)
+//measurement bandwidth
+
+//pitch roll yaw transition matrix
+//output of IMU already discritized
+
+
