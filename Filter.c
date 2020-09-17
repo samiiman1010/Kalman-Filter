@@ -48,7 +48,7 @@ void initKalman() {
     A = newMatrix(3, 3);
     B = newMatrix(3, 3);
     state = newMatrix(3, 1);
-    lastState = newMatrix(3, 3);
+    lastState = newMatrix(3, 1);
     C = newMatrix(3, 3);
     Q = newMatrix(3, 3);
     R = newMatrix(3, 3);
@@ -134,9 +134,64 @@ void kalman() {
 
 
     /* Let's Update! */
+    
+    matrix * p_trans;
+    p_trans = newMatrix(3, 3);
+    matrix * pC;
+    pC = newMatrix(3, 3);
+    matrix * pCp;
+    pCp = newMatrix(3, 3);
+    matrix * Cp;
+    Cp = newMatrix(3, 3);
+    matrix * C_trans;
+    C_trans = newMatrix(3, 3);
+    matrix * CpC;
+    CpC = newMatrix(3, 3);
+    matrix * CpCR;
+    CpCR = newMatrix(3, 3);
+    matrix * Clast;
+    Clast = newMatrix(3, 1);
+    matrix * ysub;
+    ysub = newMatrix(3, 1);
+    matrix * Kysub;
+    Kysub = newMatrix(3, 1);
+    matrix * id;
+    id = newMatrix(3, 3);
+    matrix * KC;
+    KC = newMatrix(3, 1);
+    matrix * idsub;
+    idsub = newMatrix(3, 3);
 
     //This part is representative of:
-    //  K = p * C * p
+    //  p * C * p'
+    product(p, C, pC);
+    transpose(p, p_trans);
+    product(pC, p_trans, pCp);
+    
+    //This part is representative of:
+    //  (C*p*C' + R)
+    product(C, p, Cp);
+    transpose(C, C_trans);
+    product(Cp, C_trans, CpC);
+    sum(CpC, R, CpCR);
+    
+    //Product of the above matrices:
+    product(pCp, CpCR, K);
+    
+    //y = C*state
+    product(C, state, y);
+    
+    //state = x + K*(y-C*lastState)
+    product(C, lastState, Clast);
+    difference(y, Clast, ysub);
+    product(K, ysub, Kysub);
+    sum(x, Kysub, state);
+    
+    //P = (eye(3) - K*C)*p
+    identity(id);
+    product(K, C, KC);
+    difference(id, KC, idsub);
+    product(idsub, p, x);
 }
 
 
