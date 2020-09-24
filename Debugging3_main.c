@@ -1,11 +1,15 @@
 #include "geomag.h"
 #define ARRAY_SIZE 5
 //#define TARGET_EMBEDDED
-extern BFieldModel BFieldModel1;
+//extern BFieldModel BFieldModel1;
+
+extern BFieldModel model;
+
 
 int main(void)
 {
-    BField model;
+    BField bfield;
+
 
     unsigned int i = ARRAY_SIZE -1;
     unsigned int source[ARRAY_SIZE] = {1, 2, 3, 4, 5};
@@ -74,7 +78,7 @@ does the magnetic field direction component calcs with shval3 and dihf3
 //read_model(model,"WMM2015.COF");
 
 double sdate=julday(2,4,2018);
-get_field_components(&model, &BFieldModel1, 3000, kUnitsKilometers, kCoordSysGeodetic, 50, 49, sdate);
+get_field_components(&bfield, &model, 3000, kUnitsKilometers, kCoordSysGeodetic, 50, 49, sdate); //linking error here
 
     while (i>0) {
         destination[i] = source[ARRAY_SIZE-i-1];

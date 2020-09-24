@@ -182,13 +182,13 @@ int my_isnan(double d)
  *
  */
 
-static int interpsh(const double date, double dte1, int nmax1, double dte2, int nmax2,
-                    const int gh,
-			        const double gh1[MAXCOEFF], const double gh2[MAXCOEFF],
-			        double gha[MAXCOEFF], double ghb[MAXCOEFF]);
-static int extrapsh(double date, double dte1, int nmax1, int nmax2, int gh,
-			        const double gh1[MAXCOEFF], const double gh2[MAXCOEFF],
-			        double gha[MAXCOEFF], double ghb[MAXCOEFF]);
+static int interpsh(const double date, double dte1, int nmax1, double dte2, //all doubles changed to float
+                    int nmax2, const int gh,
+                    const double gh1[MAXCOEFF], const double gh2[MAXCOEFF],
+                    double gha[MAXCOEFF], double ghb[MAXCOEFF]);
+static int extrapsh(double date, double dte1, int nmax1, int nmax2, int gh,    //all doubles changed to floats
+                    const double gh1[MAXCOEFF], const double gh2[MAXCOEFF],
+                    double gha[MAXCOEFF], double ghb[MAXCOEFF]);
 static int shval3(const CoordinateSystem coordSys, double flat, double flon,
                   const double elev, const int nmax, const int gh,
                   int iext, double ext1, double ext2, double ext3,
@@ -210,8 +210,8 @@ static int getshc(FILE *stream, int iflag, long int strec,
  * @param sdate Start date.
  * @param mdfile Filename of the model file.
  */
-int get_field_components(BField *const bfield,
-                         BFieldModel const*const model,
+int get_field_components(BField *const bfield,              // const changed to float
+                         BFieldModel const*const model,      // const changed to float
                          double alt,
                          const Units altUnits,
                          const CoordinateSystem coordSys,
@@ -326,6 +326,12 @@ int get_field_components(BField *const bfield,
 	} else {
 		nmax = extrapsh(sdate, model->epoch[modelI], model->max1[modelI], model->max2[modelI], 3,
 						model->gh1[modelI], model->gh2[modelI], gha, ghb);
+
+		/*
+		static int extrapsh(float date, float dte1, int nmax1, int nmax2, int gh,    //all doubles changed to floats
+                    const float gh1[MAXCOEFF], const float gh2[MAXCOEFF],
+                    float gha[MAXCOEFF], float ghb[MAXCOEFF])
+		*/
 		nmax = extrapsh(sdate+1, model->epoch[modelI], model->max1[modelI], model->max2[modelI], 4,
 						model->gh1[modelI], model->gh2[modelI], gha, ghb);
 	}
@@ -649,7 +655,7 @@ static int getshc(FILE *stream, int iflag, long int strec,
  *           August 16, 1988
  *
  */
-static int extrapsh(double date, double dte1, int nmax1, int nmax2, int gh,
+static int extrapsh(double date, double dte1, int nmax1, int nmax2, int gh,    //all doubles changed to floats
                     const double gh1[MAXCOEFF], const double gh2[MAXCOEFF],
                     double gha[MAXCOEFF], double ghb[MAXCOEFF])
 {
@@ -747,7 +753,7 @@ static int extrapsh(double date, double dte1, int nmax1, int nmax2, int gh,
  *         Lockheed Missiles and Space Company, Sunnyvale CA
  *         August 17, 1988
  */
-static int interpsh(const double date, double dte1, int nmax1, double dte2,
+static int interpsh(const double date, double dte1, int nmax1, double dte2, //all doubles changed to float
                     int nmax2, const int gh,
                     const double gh1[MAXCOEFF], const double gh2[MAXCOEFF],
                     double gha[MAXCOEFF], double ghb[MAXCOEFF])

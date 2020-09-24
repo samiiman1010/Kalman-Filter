@@ -24,4 +24,27 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>geomag.c</name>
+			<type>1</type>
+			<location>C:/Users/danth/Documents/GEOMAG_EMBED_STUFF/geomag.c</location>
+		</link>
+		<link>
+			<name>geomag.h</name>
+			<type>1</type>
+			<location>C:/Users/danth/Documents/GEOMAG_EMBED_STUFF/geomag.h</location>
+		</link>
+		<link>
+			<name>igrf.c</name>
+			<type>1</type>
+			<location>C:/Users/danth/Documents/GEOMAG_EMBED_STUFF/igrf.c</location>
+		</link>
+	</linkedResources>
+	<variableList>
+		<variable>
+			<name>GEOMAG</name>
+			<value>file:/C:/Users/danth/Documents/GEOMAG_EMBED_STUFF</value>
+		</variable>
+	</variableList>
 </projectDescription>

@@ -7,7 +7,7 @@ extern "C" {
 #endif
 
 /** Max number of models in a file */
-#define MAXMOD 30
+#define MAXMOD 19 //19 is max
 #define TARGET_EMBEDDED
 
 typedef enum {
@@ -21,7 +21,7 @@ typedef enum {
     kCoordSysGeocentric = 2
 } CoordinateSystem;
 
-typedef struct {
+typedef struct { //ALL DOUBLES CHANGED TO FLOAT
     double d;    /** Declination of the field from the
                      geographic north (deg). */
     double i;    /** Inclination of the field (deg). */
@@ -42,7 +42,7 @@ typedef struct {
 #define MAXDEG 13
 #define MAXCOEFF (MAXDEG*(MAXDEG+2)+1) /* index starts with 1!, (from old Fortran?) */
 
-typedef struct {
+typedef struct { //ALL DOUBLES CHANGED TO FLOAT
     char name[MAXMOD][9];
     double epoch[MAXMOD];  /** epoch of model. */
     double yrmin[MAXMOD];  /** Min year of model. */
@@ -60,7 +60,7 @@ typedef struct {
     double gh2[MAXMOD][MAXCOEFF]; /** Schmidt quasi-normal internal spherical harmonic coeff. */
 } BFieldModel;
 
-int get_field_components(BField *const bfield,
+int get_field_components(BField *const bfield, //const changed to float
                          BFieldModel const*const model,
                          double alt,
                          const Units altUnits,
