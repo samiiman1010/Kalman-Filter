@@ -1,14 +1,20 @@
 #include "geomag.h"
+#include <ti/devices/msp432p4xx/driverlib/driverlib.h>
 #define ARRAY_SIZE 5
 //#define TARGET_EMBEDDED
 //extern BFieldModel BFieldModel1;
 
 extern BFieldModel model;
+extern BFieldModel model2015;
+//model2015.name[9][0]=model.name[9][0];
 
+//new plan. figure out  what exaclty is there
 
 int main(void)
 {
-    BField bfield;
+  //  model2015.name[9][0]=model.name[9][0];
+//1-9 of rows may have to be for looped
+    //model2015.altmax[9]=model.altmax[9];
 
 
     unsigned int i = ARRAY_SIZE -1;
@@ -76,9 +82,20 @@ does the magnetic field direction component calcs with shval3 and dihf3
 */
 
 //read_model(model,"WMM2015.COF");
+    initialize_LaunchpadLED1();
+    //GPIO_setAsOutputPin(GPIO_PORT_P1, GPIO_PIN0);
+BField bfield;
+double maxalt_b=model.name[1][0];//total field intens                                        //lat long
+double minalt_b=model.altmin[1];
+ char name_b=model.name[0][0];
+ double epoch_b=model.epoch[1];
 
-double sdate=julday(2,4,2018);
-get_field_components(&bfield, &model, 3000, kUnitsKilometers, kCoordSysGeodetic, 50, 49, sdate); //linking error here
+double sdate=julday(10,18,2020);
+get_field_components(&bfield, &model, 500, kUnitsKilometers, kCoordSysGeodetic, 50, 49, sdate); //linking error here
+
+double b=bfield.f;
+double maxalt=model.altmax[1];//total field intens                                        //lat long
+double minalt=model.altmin[1];//total field intens                                        //lat long
 
     while (i>0) {
         destination[i] = source[ARRAY_SIZE-i-1];
