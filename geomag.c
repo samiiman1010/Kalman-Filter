@@ -107,7 +107,10 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
+#include <ti/devices/msp432p4xx/inc/msp.h>
+#include <stdint.h>
 #include "geomag.h"
+#include <ti/devices/msp432p4xx/driverlib/driverlib.h>
 
 int my_isnan(double d)
 {
@@ -139,6 +142,19 @@ int my_isnan(double d)
 #define EXT_COEFF1 (double)0
 #define EXT_COEFF2 (double)0
 #define EXT_COEFF3 (double)0
+#define GPIO_PIN0                                                      (0x0001)
+#define GPIO_PORT_P1                                                          1
+
+
+void initialize_LaunchpadLED1()
+{
+    GPIO_setAsOutputPin(GPIO_PORT_P1, GPIO_PIN0);
+}
+
+void toggle_LaunchpadLED1()
+{
+    GPIO_toggleOutputOnPin(GPIO_PORT_P1, GPIO_PIN0);
+}
 
 /*
  *
@@ -210,6 +226,7 @@ static int getshc(FILE *stream, int iflag, long int strec,
  * @param sdate Start date.
  * @param mdfile Filename of the model file.
  */
+
 int get_field_components(BField *const bfield,              // const changed to float
                          BFieldModel const*const model,      // const changed to float
                          double alt,
@@ -243,14 +260,16 @@ int get_field_components(BField *const bfield,              // const changed to 
 
 	/* Warn if the date is past end of validity. */
 	if ((sdate > model->maxyr) && (sdate < model->maxyr + 1)) {
-		printf("\nWarning: The date %4.2f is out of range,\n"
+	   // toggle_LaunchpadLED1();
+	    printf("\nWarning: The date %4.2f is out of range,\n"
 		       "         but still within one year of model expiration date.\n"
 		       "         An updated model file is available before 1.1.%4.0f\n",
 		       sdate, model->maxyr);
 	}
 
 	if (sdate < model->minyr || sdate > model->maxyr+1) {
-		return 0;
+	    toggle_LaunchpadLED1();
+	    return 0;
 	}
 
 	/* Pick model */

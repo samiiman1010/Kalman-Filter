@@ -1,13 +1,14 @@
 
 #ifndef GEOMAG_H
 #define GEOMAG_H
+#include <ti/devices/msp432p4xx/driverlib/driverlib.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /** Max number of models in a file */
-#define MAXMOD 19 //19 is max
+#define MAXMOD 19//19 is max, 30 is default
 #define TARGET_EMBEDDED
 
 typedef enum {
@@ -70,6 +71,8 @@ int get_field_components(BField *const bfield, //const changed to float
                          const double sdate);
 
 double julday(const int month, const int day, const int year);
+void initialize_LaunchpadLED1();
+void toggle_LaunchpadLED1();
 
 #ifndef TARGET_EMBEDDED
 int read_model(BFieldModel *const model, const char mdfile[]);
