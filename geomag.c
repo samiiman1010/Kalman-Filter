@@ -156,6 +156,10 @@ void toggle_LaunchpadLED1()
     GPIO_toggleOutputOnPin(GPIO_PORT_P1, GPIO_PIN0);
 }
 
+void turnOff_LaunchpadLED1()
+{
+    GPIO_setOutputLowOnPin(GPIO_PORT_P1, GPIO_PIN0);
+}
 /*
  *
  *                             Program Geomag
@@ -260,7 +264,8 @@ int get_field_components(BField *const bfield,              // const changed to 
 
 	/* Warn if the date is past end of validity. */
 	if ((sdate > model->maxyr) && (sdate < model->maxyr + 1)) {
-	   // toggle_LaunchpadLED1();
+
+	    toggle_LaunchpadLED1();
 	    printf("\nWarning: The date %4.2f is out of range,\n"
 		       "         but still within one year of model expiration date.\n"
 		       "         An updated model file is available before 1.1.%4.0f\n",
@@ -268,13 +273,13 @@ int get_field_components(BField *const bfield,              // const changed to 
 	}
 
 	if (sdate < model->minyr || sdate > model->maxyr+1) {
-	    toggle_LaunchpadLED1();
+	    //toggle_LaunchpadLED1();
 	    return 0;
 	}
 
 	/* Pick model */
 	for (modelI = 0; modelI < model->nmodel; modelI++) {
-		if (sdate < model->yrmax[modelI]) break;
+		if (sdate < model->yrmax[modelI]) break;        // it looks like IGRF2015 should be selected given nmodel=2 and yrmax=2015
 	}
 	/* if beyond end of last model use last model */
 	if (modelI == model->nmodel) modelI--;
@@ -437,7 +442,7 @@ int read_model(BFieldModel *const model, const char mdfile[])
 	inbuff[MAXINBUFF-1] = '\0';  /* Just to protect mem. */
 
 	if (!(stream = fopen(mdfile, "rt"))) {
-		fprintf(stderr, "Failed to open \"%s\" for reading.\n", mdfile);
+		//fprintf(stderr, "Failed to open \"%s\" for reading.\n", mdfile);
 		return 0;
 	}
 
@@ -451,7 +456,7 @@ int read_model(BFieldModel *const model, const char mdfile[])
 		/* Ensure record size is correct. */
 		if (strlen(inbuff) != RECL)
 		{
-			fprintf(stderr, "Corrupt record in file %s on line %d.\n", mdfile, lineNum);
+			//fprintf(stderr, "Corrupt record in file %s on line %d.\n", mdfile, lineNum);
 			fclose(stream);
 			return 0;
 		}

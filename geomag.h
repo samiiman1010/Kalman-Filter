@@ -58,7 +58,7 @@ typedef struct { //ALL DOUBLES CHANGED TO FLOAT
     int max3[MAXMOD];      /** Acceleration coefficient. */
     long irec_pos[MAXMOD]; /** Record counter for header */
     double gh1[MAXMOD][MAXCOEFF]; /** Schmidt quasi-normal internal spherical harmonic coeff. */
-    double gh2[MAXMOD][MAXCOEFF]; /** Schmidt quasi-normal internal spherical harmonic coeff. */
+    double gh2[MAXMOD][MAXCOEFF];     /** Schmidt quasi-normal internal spherical harmonic coeff. */ //14 fields from zeros
 } BFieldModel;
 
 int get_field_components(BField *const bfield, //const changed to float
@@ -73,6 +73,8 @@ int get_field_components(BField *const bfield, //const changed to float
 double julday(const int month, const int day, const int year);
 void initialize_LaunchpadLED1();
 void toggle_LaunchpadLED1();
+void turnOff_LaunchpadLED1();
+
 
 #ifndef TARGET_EMBEDDED
 int read_model(BFieldModel *const model, const char mdfile[]);
