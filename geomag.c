@@ -279,7 +279,11 @@ int get_field_components(BField *const bfield,              // const changed to 
 
 	/* Pick model */
 	for (modelI = 0; modelI < model->nmodel; modelI++) {
-		if (sdate < model->yrmax[modelI]) break;        // it looks like IGRF2015 should be selected given nmodel=2 and yrmax=2015
+		if (sdate < model->yrmax[modelI])
+		    {break;
+		   // toggle_LaunchpadLED1();
+		    // it looks like IGRF2015 should be selected given nmodel=2 and yrmax=2015
+		    }
 	}
 	/* if beyond end of last model use last model */
 	if (modelI == model->nmodel) modelI--;
